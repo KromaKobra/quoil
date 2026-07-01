@@ -8,7 +8,7 @@ BUILD="$QUOIL/build"
 
 if [[ ! -d "$BUILD/qml" ]]; then
     echo "error: $BUILD/qml not found — run the build first:" >&2
-    echo "  nix develop /home/kroma/.config/quickshell/shell# -- bash -c 'cmake -B $BUILD -S $QUOIL && cmake --build $BUILD -j\$(nproc)'" >&2
+    echo "  cd $QUOIL && nix develop -- bash -c 'cmake -B build && cmake --build build -j\$(nproc)'" >&2
     exit 1
 fi
 

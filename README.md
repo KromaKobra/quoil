@@ -15,3 +15,5 @@ To build and run:
 >
 > \# Exit the dev shell, then run the shell any time: <br>
 > `./run-quoil.sh`
+
+Also, the truth is that running run-quoil.sh might actually build everything automatically anyway. You can try and just run ./run-quoil.sh first if you want lol.
