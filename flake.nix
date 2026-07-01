@@ -1,7 +1,9 @@
 {
   description = "quoil desktop shell";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+  # Pinned to the same commit as the system nixpkgs so the plugin builds
+  # against the same Qt the system's qs binary links against.
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/6b316287bae2ee04c9b93c8c858d930fd07d7338";
 
   outputs = { self, nixpkgs }: let
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
