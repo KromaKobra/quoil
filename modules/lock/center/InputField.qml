@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import M3Shapes
-import Caelestia.Config
+import Quoil.Config
 import qs.components
 import qs.services
 import qs.modules.lock

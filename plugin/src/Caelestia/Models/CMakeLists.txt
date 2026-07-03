@@ -1,5 +1,5 @@
 qml_module(caelestia-models
-    URI Caelestia.Models
+    URI Quoil.Models
     SOURCES
         filesystemmodel.hpp filesystemmodel.cpp
     LIBRARIES

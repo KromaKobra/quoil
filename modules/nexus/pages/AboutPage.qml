@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
+import Quoil
+import Quoil.Config
 import qs.components
 import qs.services
 import qs.utils
@@ -70,7 +70,7 @@ PageBase {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: Tokens.spacing.small
-                    text: "Caelestia"
+                    text: "Quoil"
                     font: Tokens.font.headline.builders.large.width(110).build()
                 }
 

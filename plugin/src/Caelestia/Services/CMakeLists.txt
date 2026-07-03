@@ -1,5 +1,5 @@
 qml_module(caelestia-services
-    URI Caelestia.Services
+    URI Quoil.Services
     SOURCES
         service.cpp
         serviceref.cpp

@@ -1,5 +1,5 @@
 qml_module(caelestia-internal
-    URI Caelestia.Internal
+    URI Quoil.Internal
     SOURCES
         circularbuffer.cpp
         circularindicatormanager.cpp

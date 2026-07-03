@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Services.UPower
-import Caelestia.Config
+import Quoil.Config
 import qs.components
 import qs.services
 import qs.utils

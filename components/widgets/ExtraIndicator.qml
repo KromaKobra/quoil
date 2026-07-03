@@ -1,6 +1,6 @@
 import "../effects"
 import QtQuick
-import Caelestia.Config
+import Quoil.Config
 import qs.components
 import qs.services
 

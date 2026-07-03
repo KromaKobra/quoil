@@ -1,5 +1,5 @@
 qml_module(caelestia-core
-    URI Caelestia
+    URI Quoil
     SOURCES
         cutils.cpp
         qalculator.cpp

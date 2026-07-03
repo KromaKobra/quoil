@@ -1,9 +1,9 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Caelestia.Components
-import Caelestia.Config
-import Caelestia.Services
+import Quoil.Components
+import Quoil.Config
+import Quoil.Services
 import qs.components
 import qs.components.controls
 import qs.components.widgets

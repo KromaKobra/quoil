@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
-import Caelestia
-import Caelestia.Config
+import Quoil
+import Quoil.Config
 import qs.services
 
 MouseArea {

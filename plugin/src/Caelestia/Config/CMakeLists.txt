@@ -1,5 +1,5 @@
 qml_module(caelestia-config
-    URI Caelestia.Config
+    URI Quoil.Config
     SOURCES
         config.cpp
         configattached.cpp

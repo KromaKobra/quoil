@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
-import Caelestia.Blobs
-import Caelestia.Config
-import Caelestia.Services
+import Quoil.Blobs
+import Quoil.Config
+import Quoil.Services
 import qs.components
 import qs.services
 

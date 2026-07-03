@@ -4,9 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
-import Caelestia.Internal
+import Quoil
+import Quoil.Config
+import Quoil.Internal
 import qs.components.misc
 
 Singleton {

@@ -5,8 +5,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
-import Caelestia
-import Caelestia.Config
+import Quoil
+import Quoil.Config
 import qs.components.misc
 import qs.services
 import qs.utils

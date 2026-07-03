@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Caelestia.Components
-import Caelestia.Config
+import Quoil.Components
+import Quoil.Config
 import qs.components
 import qs.components.controls
 import qs.components.images

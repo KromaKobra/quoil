@@ -2,8 +2,8 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Caelestia
-import Caelestia.Config
+import Quoil
+import Quoil.Config
 import qs.utils
 
 Singleton {

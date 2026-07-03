@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+# quoil-native CLI — drop-in replacement for the pieces of the removed
+# `caelestia` binary that the Hyprland config and the shell (Recorder.qml)
+# still call. Replicates: toggle (special workspaces), record, clipboard,
+# emoji, screenshot, pip.
+set -euo pipefail
+
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/quoil"
+DATA="${XDG_DATA_HOME:-$HOME/.local/share}/quoil"
+REC_TMP="$STATE/record/recording.mp4"
+REC_DIR="${QUOIL_RECORDINGS_DIR:-$HOME/Videos/Recordings}"
+SC_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/quoil/screenshots"
+EMOJI_FILE="$DATA/emojis.txt"
+
+notify() { command -v notify-send >/dev/null 2>&1 && notify-send -a Shell "$@" || true; }
+running() { pidof gpu-screen-recorder >/dev/null 2>&1; }
+
+# --- toggle: show/hide a special workspace, spawning its app on first use ----
+cmd_toggle() {
+    local ws="${1:?usage: quoil toggle <workspace>}"
+
+    if [[ "$ws" == "specialws" ]]; then
+        # Toggle whichever special workspace is open on the focused monitor
+        local cur
+        cur=$(hyprctl -j monitors | jq -r '.[] | select(.focused) | .specialWorkspace.name' | sed 's/^special://')
+        [[ -z "$cur" || "$cur" == "null" ]] && cur=special
+        hyprctl dispatch togglespecialworkspace "$cur"
+        return
+    fi
+
+    # class used to detect a running instance; cmd spawned into the special ws
+    local class cmd
+    case "$ws" in
+        music)         class="Spotify"; cmd="spotify" ;;
+        communication) class="vesktop"; cmd="vesktop" ;;
+        sysmon)        class="btop";    cmd="kitty --class btop -e btop" ;;
+        todo)          class="Todoist"; cmd="todoist" ;;
+        *)             class="";        cmd="" ;;
+    esac
+
+    # Already running? -> just toggle visibility (rules.conf moves it into the ws)
+    if [[ -n "$class" ]] && hyprctl -j clients \
+        | jq -e --arg c "$class" 'any(.[]; (.class // "" | ascii_downcase) | contains($c | ascii_downcase))' >/dev/null; then
+        hyprctl dispatch togglespecialworkspace "$ws"
+        return
+    fi
+
+    # Not running and we have a launchable app -> open it into the special ws
+    if [[ -n "$cmd" ]] && command -v "${cmd%% *}" >/dev/null 2>&1; then
+        hyprctl dispatch exec "[workspace special:$ws] app2unit -- $cmd"
+    else
+        hyprctl dispatch togglespecialworkspace "$ws"
+    fi
+}
+
+# --- record: gpu-screen-recorder wrapper (toggle start/stop, pause) ----------
+cmd_record() {
+    local sound=0 region=0 pause=0
+    for a in "$@"; do
+        case "$a" in
+            -p|--pause) pause=1 ;;
+            -s) sound=1 ;;
+            -r) region=1 ;;
+            -sr|-rs) sound=1; region=1 ;;
+            --sound) sound=1 ;;
+            --region) region=1 ;;
+        esac
+    done
+
+    if (( pause )); then
+        pkill -USR2 -f gpu-screen-recorder || true
+        return
+    fi
+
+    if running; then   # stop
+        pkill -f gpu-screen-recorder || true
+        while running; do sleep 0.1; done
+        mkdir -p "$REC_DIR"
+        local out="$REC_DIR/recording_$(date +%Y%m%d_%H-%M-%S).mp4"
+        mv "$REC_TMP" "$out" 2>/dev/null || true
+        notify "Recording stopped" "Saved to $out"
+        return
+    fi
+
+    # start
+    local args=(-w) rr geom
+    if (( region )); then
+        geom=$(slurp -f '%wx%h+%x+%y')
+        rr=$(hyprctl -j monitors | jq -r 'map(select(.focused)) | .[0].refreshRate | round')
+        args+=(region -region "$geom" -f "${rr:-60}")
+    else
+        local mon
+        mon=$(hyprctl -j monitors | jq -r '.[] | select(.focused) | .name')
+        rr=$(hyprctl -j monitors | jq -r '.[] | select(.focused) | .refreshRate | round')
+        args+=("$mon" -f "${rr:-60}")
+    fi
+    (( sound )) && args+=(-a default_output)
+
+    mkdir -p "$(dirname "$REC_TMP")"
+    gpu-screen-recorder "${args[@]}" -o "$REC_TMP" &
+    notify "Recording started" "Recording..."
+}
+
+# --- clipboard: cliphist history via fuzzel ---------------------------------
+cmd_clipboard() {
+    local del=0
+    [[ "${1:-}" == "-d" || "${1:-}" == "--delete" ]] && del=1
+    local sel
+    if (( del )); then
+        sel=$(cliphist list | fuzzel --dmenu --prompt='del > ' --placeholder='Delete from clipboard') || return 0
+        printf '%s' "$sel" | cliphist delete
+    else
+        sel=$(cliphist list | fuzzel --dmenu --placeholder='Type to search clipboard') || return 0
+        printf '%s' "$sel" | cliphist decode | wl-copy
+    fi
+}
+
+# --- emoji: fuzzel picker over staged emoji list ----------------------------
+cmd_emoji() {
+    [[ -f "$EMOJI_FILE" ]] || { notify "Emoji picker" "Missing $EMOJI_FILE"; exit 1; }
+    local sel
+    sel=$(fuzzel --dmenu --placeholder='Type to search emojis' < "$EMOJI_FILE") || return 0
+    printf '%s' "${sel%% *}" | wl-copy
+}
+
+# --- screenshot: fullscreen -> clipboard + cache + notify -------------------
+cmd_screenshot() {
+    mkdir -p "$SC_CACHE"
+    local dest="$SC_CACHE/$(date +%Y%m%d%H%M%S).png"
+    grim - | tee "$dest" | wl-copy
+    notify -i image-x-generic-symbolic "Screenshot taken" "Copied to clipboard ($dest)"
+}
+
+# --- pip: manual picture-in-picture for the focused window ------------------
+cmd_pip() {
+    hyprctl --batch "dispatch setfloating active ; dispatch resizeactive exact 25% 25% ; dispatch moveactive exact 74% 74% ; dispatch pin active"
+}
+
+case "${1:-}" in
+    toggle)     shift; cmd_toggle "$@" ;;
+    record)     shift; cmd_record "$@" ;;
+    clipboard)  shift; cmd_clipboard "$@" ;;
+    emoji)      shift; cmd_emoji "$@" ;;
+    screenshot) shift; cmd_screenshot "$@" ;;
+    pip)        shift; cmd_pip "$@" ;;
+    *) echo "usage: quoil {toggle|record|clipboard|emoji|screenshot|pip} [args]" >&2; exit 2 ;;
+esac

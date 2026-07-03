@@ -2,7 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Caelestia.Config
+import Quoil.Config
 import qs.components
 import qs.services
 import qs.modules.nexus

@@ -2,9 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import Caelestia
-import Caelestia.Config
-import Caelestia.Services
+import Quoil
+import Quoil.Config
+import Quoil.Services
 import qs.components
 import qs.components.controls
 import qs.services

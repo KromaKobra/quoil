@@ -15,6 +15,8 @@ Singleton {
     property bool needsStop
     property bool needsPause
 
+    readonly property string cli: Quickshell.env("HOME") + "/.config/quickshell/quoil/scripts/quoil"
+
     function start(extraArgs = []): void {
         needsStart = true;
         startArgs = extraArgs;
@@ -51,15 +53,15 @@ Singleton {
 
             if (code === 0) {
                 if (root.needsStop) {
-                    Quickshell.execDetached(["caelestia", "record"]);
+                    Quickshell.execDetached([root.cli, "record"]);
                     props.running = false;
                     props.paused = false;
                 } else if (root.needsPause) {
-                    Quickshell.execDetached(["caelestia", "record", "-p"]);
+                    Quickshell.execDetached([root.cli, "record", "-p"]);
                     props.paused = !props.paused;
                 }
             } else if (root.needsStart) {
-                Quickshell.execDetached(["caelestia", "record", ...root.startArgs]);
+                Quickshell.execDetached([root.cli, "record", ...root.startArgs]);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;

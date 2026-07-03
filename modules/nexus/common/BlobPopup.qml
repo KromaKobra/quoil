@@ -1,6 +1,6 @@
 import QtQuick
-import Caelestia.Blobs
-import Caelestia.Config
+import Quoil.Blobs
+import Quoil.Config
 import qs.components
 import qs.services
 

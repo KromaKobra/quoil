@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Wayland
 import Quickshell.Widgets
-import Caelestia.Config
+import Quoil.Config
 import qs.components
 import qs.services
 import qs.utils
