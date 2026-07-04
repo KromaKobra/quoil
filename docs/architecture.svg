@@ -1,0 +1,376 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1290" font-family="system-ui, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .container { fill:#f8fafc; stroke:#94a3b8; stroke-width:1.5; rx:12; }
+      .hdr  { font-size:15px; font-weight:700; fill:#334155; }
+      .sub  { font-size:11.5px; fill:#64748b; }
+      .ui   { fill:#dbeafe; stroke:#2563eb; stroke-width:1.5; }
+      .uid  { fill:#eff6ff; stroke:#2563eb; stroke-width:1.5; stroke-dasharray:6 4; }
+      .svc  { fill:#dcfce7; stroke:#16a34a; stroke-width:1.3; }
+      .cpp  { fill:#f3e8ff; stroke:#9333ea; stroke-width:1.3; }
+      .ext  { fill:#ffedd5; stroke:#ea580c; stroke-width:1.3; }
+      .root { fill:#fef9c3; stroke:#ca8a04; stroke-width:1.3; }
+      .entry{ fill:#fde68a; stroke:#b45309; stroke-width:2; }
+      .t    { font-size:13px; font-weight:700; fill:#1e293b; }
+      .b    { font-size:11.5px; fill:#334155; }
+      .c    { font-size:12px; fill:#1e293b; text-anchor:middle; }
+      .cb   { font-size:12px; font-weight:700; fill:#1e293b; text-anchor:middle; }
+      .arrow{ fill:none; stroke:#475569; stroke-width:1.8; marker-end:url(#arr); }
+      .arrow2{ fill:none; stroke:#475569; stroke-width:1.8; marker-end:url(#arr); marker-start:url(#arr); }
+      .lbl  { font-size:11.5px; font-style:italic; fill:#475569; }
+    </style>
+  </defs>
+
+  <!-- ======================= TITLE ======================= -->
+  <text x="30" y="44" font-size="24" font-weight="800" fill="#0f172a">Quoil — Quickshell shell architecture</text>
+  <text x="30" y="68" class="sub">~/.config/quickshell/quoil · entry: shell.qml · QML module URI "qs" = repo root, "Quoil.*" = C++ plugin</text>
+
+  <!-- ======================= LEGEND ======================= -->
+  <rect x="1090" y="14" width="580" height="132" class="container"/>
+  <text x="1108" y="36" class="hdr" font-size="13">Legend</text>
+  <rect x="1108" y="48" width="26" height="15" class="ui"/><text x="1142" y="60" class="b">UI surface / panel — always loaded</text>
+  <rect x="1108" y="72" width="26" height="15" class="uid"/><text x="1142" y="84" class="b">UI — on-demand (dashed: shown on keybind/IPC/hover/event)</text>
+  <rect x="1108" y="96" width="26" height="15" class="root"/><text x="1142" y="108" class="b">headless root scope (loaded by shell.qml)</text>
+  <rect x="1108" y="120" width="26" height="15" class="entry"/><text x="1142" y="132" class="b">entry point</text>
+  <rect x="1420" y="48" width="26" height="15" class="svc"/><text x="1454" y="60" class="b">QML service singleton (services/)</text>
+  <rect x="1420" y="72" width="26" height="15" class="cpp"/><text x="1454" y="84" class="b">C++ plugin module (Quoil.*)</text>
+  <rect x="1420" y="96" width="26" height="15" class="ext"/><text x="1454" y="108" class="b">external system</text>
+  <line x1="1420" y1="127" x2="1448" y2="127" class="arrow"/><text x="1454" y="132" class="b">loads / data flow</text>
+
+  <!-- ======================= ENTRY ======================= -->
+  <rect x="400" y="90" width="400" height="52" rx="10" class="entry"/>
+  <text x="600" y="112" class="cb" font-size="15">shell.qml — ShellRoot (entry point)</text>
+  <text x="600" y="130" class="c" font-size="11">settings.watchFiles · loads everything below in order</text>
+
+  <path class="arrow" d="M 560 142 C 560 162, 430 158, 425 178"/>
+  <path class="arrow" d="M 800 118 C 970 118, 1130 142, 1195 178"/>
+
+  <!-- ======================= UI SURFACES ======================= -->
+  <rect x="30" y="180" width="940" height="790" class="container" rx="12"/>
+  <text x="50" y="206" class="hdr">UI surfaces — windows &amp; panels</text>
+
+  <!-- Background -->
+  <rect x="60" y="222" width="280" height="118" rx="10" class="ui"/>
+  <text x="200" y="244" class="cb">Background — modules/background/</text>
+  <text x="200" y="264" class="c">Wallpaper · Visualiser (cava bars) · DesktopClock</text>
+  <text x="200" y="282" class="c">one window per screen, background layer</text>
+  <text x="200" y="300" class="c" font-size="11">data: Wallpapers · Audio.cava · Time</text>
+
+  <!-- Lock -->
+  <rect x="365" y="222" width="290" height="118" rx="10" class="uid"/>
+  <text x="510" y="244" class="cb">Lock — modules/lock/</text>
+  <text x="510" y="264" class="c">WlSessionLock · Pam.qml (password + fprintd)</text>
+  <text x="510" y="282" class="c">clock · media · weather · resources · notif dock</text>
+  <text x="510" y="300" class="c" font-size="11">triggers: keybind · ipc "lock" · IdleMonitors</text>
+
+  <!-- AreaPicker -->
+  <rect x="680" y="222" width="265" height="118" rx="10" class="uid"/>
+  <text x="812" y="244" class="cb">AreaPicker — modules/areapicker/</text>
+  <text x="812" y="264" class="c">screenshot region picker (freeze frame)</text>
+  <text x="812" y="282" class="c">LazyLoader · overlay layer · per screen</text>
+  <text x="812" y="300" class="c" font-size="11">trigger: ipc "picker" open/openFreeze/…</text>
+
+  <!-- Drawers -->
+  <rect x="60" y="362" width="885" height="392" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="80" y="388" class="hdr" fill="#1e3a8a">Drawers — modules/drawers/ · ONE full-screen layer-shell window per screen (ContentWindow.qml)</text>
+  <text x="80" y="406" class="sub">SDF blob border (Quoil.Blobs) · Regions.qml input mask · Interactions.qml edge hover/drag · HyprlandFocusGrab · Exclusions.qml reserves space</text>
+
+  <!-- Bar (vertical) -->
+  <rect x="85" y="422" width="160" height="300" rx="10" class="ui"/>
+  <text x="165" y="444" class="cb">Bar (left edge)</text>
+  <text x="165" y="460" class="c" font-size="11">modules/bar/</text>
+  <text x="165" y="482" class="c" font-size="11.5">OS icon</text>
+  <text x="165" y="500" class="c" font-size="11.5">workspaces (Hypr)</text>
+  <text x="165" y="518" class="c" font-size="11.5">active window</text>
+  <text x="165" y="536" class="c" font-size="11.5">system tray</text>
+  <text x="165" y="554" class="c" font-size="11.5">clock</text>
+  <text x="165" y="572" class="c" font-size="11.5">status icons</text>
+  <text x="165" y="590" class="c" font-size="11.5">power button</text>
+  <text x="165" y="614" class="c" font-size="10.5">persistent or hover-reveal</text>
+  <text x="165" y="630" class="c" font-size="10.5">entries from Config.bar</text>
+
+  <!-- Popouts -->
+  <rect x="265" y="422" width="190" height="145" rx="10" class="uid"/>
+  <text x="360" y="444" class="cb">Bar popouts (hover)</text>
+  <text x="360" y="462" class="c" font-size="11">modules/bar/popouts/</text>
+  <text x="360" y="482" class="c" font-size="11.5">audio · network · bluetooth</text>
+  <text x="360" y="500" class="c" font-size="11.5">battery · kb layout · tray menus</text>
+  <text x="360" y="518" class="c" font-size="11.5">active window · lock status</text>
+  <text x="360" y="540" class="c" font-size="11">detached modes embed</text>
+  <text x="360" y="555" class="c" font-size="11">WindowInfo or Nexus</text>
+
+  <!-- drawer grid row 1 -->
+  <rect x="470" y="422" width="145" height="66" rx="9" class="uid"/>
+  <text x="542" y="444" class="cb" font-size="12">Dashboard</text>
+  <text x="542" y="460" class="c" font-size="10.5">modules/dashboard/ · top</text>
+  <text x="542" y="475" class="c" font-size="10.5">dash · media · perf · weather</text>
+
+  <rect x="625" y="422" width="145" height="66" rx="9" class="uid"/>
+  <text x="697" y="444" class="cb" font-size="12">Launcher</text>
+  <text x="697" y="460" class="c" font-size="10.5">modules/launcher/ · bottom</text>
+  <text x="697" y="475" class="c" font-size="10.5">apps · calc · schemes · walls</text>
+
+  <rect x="780" y="422" width="145" height="66" rx="9" class="uid"/>
+  <text x="852" y="444" class="cb" font-size="12">Session</text>
+  <text x="852" y="460" class="c" font-size="10.5">modules/session/ · right</text>
+  <text x="852" y="475" class="c" font-size="10.5">power menu (Config cmds)</text>
+
+  <!-- drawer grid row 2 -->
+  <rect x="470" y="498" width="145" height="66" rx="9" class="uid"/>
+  <text x="542" y="520" class="cb" font-size="12">Sidebar</text>
+  <text x="542" y="536" class="c" font-size="10.5">modules/sidebar/ · right</text>
+  <text x="542" y="551" class="c" font-size="10.5">notification center (Notifs)</text>
+
+  <rect x="625" y="498" width="145" height="66" rx="9" class="uid"/>
+  <text x="697" y="520" class="cb" font-size="12">OSD</text>
+  <text x="697" y="536" class="c" font-size="10.5">modules/osd/ · auto-shows on</text>
+  <text x="697" y="551" class="c" font-size="10.5">Audio / Brightness change</text>
+
+  <rect x="780" y="498" width="145" height="66" rx="9" class="uid"/>
+  <text x="852" y="520" class="cb" font-size="12">Utilities</text>
+  <text x="852" y="536" class="c" font-size="10.5">modules/utilities/ · bott-right</text>
+  <text x="852" y="551" class="c" font-size="10.5">recorder · idle · toggles</text>
+
+  <!-- drawer grid row 3 -->
+  <rect x="470" y="574" width="145" height="66" rx="9" class="uid"/>
+  <text x="542" y="596" class="cb" font-size="12">Notifications</text>
+  <text x="542" y="612" class="c" font-size="10.5">modules/notifications/</text>
+  <text x="542" y="627" class="c" font-size="10.5">event-driven popups</text>
+
+  <rect x="625" y="574" width="145" height="66" rx="9" class="uid"/>
+  <text x="697" y="596" class="cb" font-size="12">Toasts</text>
+  <text x="697" y="612" class="c" font-size="10.5">modules/utilities/toasts/</text>
+  <text x="697" y="627" class="c" font-size="10.5">renders Toaster queue (C++)</text>
+
+  <rect x="780" y="574" width="145" height="66" rx="9" class="uid"/>
+  <text x="852" y="596" class="cb" font-size="12">WindowInfo</text>
+  <text x="852" y="612" class="c" font-size="10.5">modules/windowinfo/</text>
+  <text x="852" y="627" class="c" font-size="10.5">detached popout, inspector</text>
+
+  <text x="470" y="668" class="b" font-size="11.5">Each panel = Wrapper.qml (reveal anim, collapses to 0) + Content.qml (lazy-loaded UI).</text>
+  <text x="470" y="686" class="b" font-size="11.5">Shown when its bool in DrawerVisibilities flips — set by Shortcuts/IPC/edge-hover.</text>
+  <text x="470" y="704" class="b" font-size="11.5">Window mask (Regions.qml) = bar + open panels → click-through elsewhere.</text>
+  <text x="85" y="740" class="sub">DrawerVisibilities (components/DrawerVisibilities.qml) per screen → registered in the Visibilities singleton, keyed by Hyprland monitor</text>
+
+  <!-- Nexus -->
+  <rect x="60" y="785" width="430" height="130" rx="10" class="uid"/>
+  <text x="275" y="808" class="cb">Nexus (settings app) — modules/nexus/</text>
+  <text x="275" y="828" class="c">FloatingWindow (normal Wayland window), created by</text>
+  <text x="275" y="845" class="c">WindowFactory.create() on "nexus" keybind / ipc · destroyed on close</text>
+  <text x="275" y="864" class="c">NavPane + Pages: wallpaper &amp; style · network · bluetooth · audio</text>
+  <text x="275" y="881" class="c">apps · panels · services · language · about</text>
+  <text x="275" y="900" class="c" font-size="11" font-style="italic">reads AND writes GlobalConfig (shell.json)</text>
+
+  <!-- shared kit note -->
+  <rect x="520" y="785" width="420" height="130" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.3"/>
+  <text x="730" y="808" class="cb" fill="#334155">Shared UI kit (used by everything above)</text>
+  <text x="730" y="830" class="c" font-size="11.5">components/ — StyledRect/Text/Window · StateLayer · MaterialIcon</text>
+  <text x="730" y="847" class="c" font-size="11.5">Anim/CAnim (curves from Tokens) · controls/ · containers/</text>
+  <text x="730" y="864" class="c" font-size="11.5">effects/ · images/ · filedialog/ · CustomShortcut (GlobalShortcut)</text>
+  <text x="730" y="884" class="c" font-size="11.5">utils/ — Paths · Icons · Images · Searcher (fzf.js) · Strings · SysInfo</text>
+
+  <!-- ======================= ROOT SCOPES ======================= -->
+  <rect x="1010" y="180" width="660" height="160" class="container"/>
+  <text x="1030" y="206" class="hdr">Root helper scopes — headless, always loaded (modules/*.qml)</text>
+
+  <rect x="1030" y="220" width="310" height="50" rx="9" class="root"/>
+  <text x="1185" y="240" class="cb" font-size="12">Shortcuts.qml — global keybinds (appid "caelestia")</text>
+  <text x="1185" y="257" class="c" font-size="11">+ IpcHandlers: drawers · nexus · toaster</text>
+
+  <rect x="1355" y="220" width="150" height="50" rx="9" class="root"/>
+  <text x="1430" y="240" class="cb" font-size="12">GSFLoader.qml</text>
+  <text x="1430" y="257" class="c" font-size="11">Google Sans Flex font</text>
+
+  <rect x="1520" y="220" width="130" height="50" rx="9" class="root"/>
+  <text x="1585" y="240" class="cb" font-size="12">BatteryMonitor</text>
+  <text x="1585" y="257" class="c" font-size="11">UPower → toasts</text>
+
+  <rect x="1030" y="280" width="200" height="46" rx="9" class="root"/>
+  <text x="1130" y="299" class="cb" font-size="12">ConfigToasts.qml</text>
+  <text x="1130" y="315" class="c" font-size="11">config load/save errors → toasts</text>
+
+  <rect x="1245" y="280" width="260" height="46" rx="9" class="root"/>
+  <text x="1375" y="299" class="cb" font-size="12">IdleMonitors.qml</text>
+  <text x="1375" y="315" class="c" font-size="11">idle timeouts → lock · dpms · suspend</text>
+
+  <!-- ======================= C++ PLUGIN ======================= -->
+  <rect x="1010" y="370" width="660" height="245" class="container" fill="#faf5ff" stroke="#9333ea"/>
+  <text x="1030" y="396" class="hdr" fill="#6b21a8">C++ plugin — plugin/src/Caelestia/ → QML modules "Quoil.*" (CMake, run-quoil.sh)</text>
+
+  <rect x="1030" y="412" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1130" y="430" class="cb" font-size="11.5">GlobalConfig · Config · Tokens</text>
+  <text x="1130" y="446" class="c" font-size="10.5">Quoil.Config ← shell.json</text>
+  <rect x="1245" y="412" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1345" y="430" class="cb" font-size="11.5">Toaster</text>
+  <text x="1345" y="446" class="c" font-size="10.5">global toast queue</text>
+  <rect x="1460" y="412" width="190" height="44" rx="8" class="cpp"/>
+  <text x="1555" y="430" class="cb" font-size="11.5">AppDb</text>
+  <text x="1555" y="446" class="c" font-size="10.5">desktop entries for launcher</text>
+
+  <rect x="1030" y="464" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1130" y="482" class="cb" font-size="11.5">Qalculator</text>
+  <text x="1130" y="498" class="c" font-size="10.5">libqalculate (launcher math)</text>
+  <rect x="1245" y="464" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1345" y="482" class="cb" font-size="11.5">Requests</text>
+  <text x="1345" y="498" class="c" font-size="10.5">HTTP client (weather, lyrics)</text>
+  <rect x="1460" y="464" width="190" height="44" rx="8" class="cpp"/>
+  <text x="1555" y="482" class="cb" font-size="11.5">ImageAnalyser</text>
+  <text x="1555" y="498" class="c" font-size="10.5">wallpaper luminance</text>
+
+  <rect x="1030" y="516" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1130" y="534" class="cb" font-size="11.5">CavaProvider · BeatTracker</text>
+  <text x="1130" y="550" class="c" font-size="10.5">PipeWire capture → FFT/BPM</text>
+  <rect x="1245" y="516" width="200" height="44" rx="8" class="cpp"/>
+  <text x="1345" y="534" class="cb" font-size="11.5">Cpu · Gpu · Memory · Storage</text>
+  <text x="1345" y="550" class="c" font-size="10.5">ticking system monitors</text>
+  <rect x="1460" y="516" width="190" height="44" rx="8" class="cpp"/>
+  <text x="1555" y="534" class="cb" font-size="11.5">Lyrics · SessionManager</text>
+  <text x="1555" y="550" class="c" font-size="10.5">synced lyrics · session ops</text>
+
+  <rect x="1030" y="568" width="200" height="38" rx="8" class="cpp"/>
+  <text x="1130" y="591" class="cb" font-size="11.5">HyprExtras · HyprDevices</text>
+  <rect x="1245" y="568" width="200" height="38" rx="8" class="cpp"/>
+  <text x="1345" y="591" class="cb" font-size="11.5">Blobs (SDF border renderer)</text>
+  <rect x="1460" y="568" width="190" height="38" rx="8" class="cpp"/>
+  <text x="1555" y="591" class="cb" font-size="11.5">FileSystemModel · Images</text>
+
+  <!-- ======================= SERVICES ======================= -->
+  <rect x="1010" y="645" width="660" height="325" class="container" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="1030" y="671" class="hdr" fill="#14532d">Service singletons — services/*.qml (lazy, shared state for all modules)</text>
+
+  <rect x="1030" y="686" width="200" height="40" rx="8" class="svc"/>
+  <text x="1130" y="703" class="cb" font-size="11.5">Visibilities</text>
+  <text x="1130" y="718" class="c" font-size="10.5">drawer-state bus per monitor</text>
+  <rect x="1245" y="686" width="200" height="40" rx="8" class="svc"/>
+  <text x="1345" y="703" class="cb" font-size="11.5">Colours</text>
+  <text x="1345" y="718" class="c" font-size="10.5">M3 palette ← scheme.json</text>
+  <rect x="1460" y="686" width="190" height="40" rx="8" class="svc"/>
+  <text x="1555" y="703" class="cb" font-size="11.5">Audio</text>
+  <text x="1555" y="718" class="c" font-size="10.5">PipeWire + cava/beat</text>
+
+  <rect x="1030" y="733" width="200" height="40" rx="8" class="svc"/>
+  <text x="1130" y="750" class="cb" font-size="11.5">Notifs</text>
+  <text x="1130" y="765" class="c" font-size="10.5">notif daemon · notifs.json</text>
+  <rect x="1245" y="733" width="200" height="40" rx="8" class="svc"/>
+  <text x="1345" y="750" class="cb" font-size="11.5">Players</text>
+  <text x="1345" y="765" class="c" font-size="10.5">MPRIS media players</text>
+  <rect x="1460" y="733" width="190" height="40" rx="8" class="svc"/>
+  <text x="1555" y="750" class="cb" font-size="11.5">Hypr</text>
+  <text x="1555" y="765" class="c" font-size="10.5">Hyprland IPC wrapper</text>
+
+  <rect x="1030" y="780" width="200" height="40" rx="8" class="svc"/>
+  <text x="1130" y="797" class="cb" font-size="11.5">Brightness</text>
+  <text x="1130" y="812" class="c" font-size="10.5">ddcutil · brightnessctl · asdbctl</text>
+  <rect x="1245" y="780" width="200" height="40" rx="8" class="svc"/>
+  <text x="1345" y="797" class="cb" font-size="11.5">Nmcli</text>
+  <text x="1345" y="812" class="c" font-size="10.5">NetworkManager CLI</text>
+  <rect x="1460" y="780" width="190" height="40" rx="8" class="svc"/>
+  <text x="1555" y="797" class="cb" font-size="11.5">VPN</text>
+  <text x="1555" y="812" class="c" font-size="10.5">provider connect/status</text>
+
+  <rect x="1030" y="827" width="200" height="40" rx="8" class="svc"/>
+  <text x="1130" y="844" class="cb" font-size="11.5">Wallpapers</text>
+  <text x="1130" y="859" class="c" font-size="10.5">walls dir · sets via caelestia CLI</text>
+  <rect x="1245" y="827" width="200" height="40" rx="8" class="svc"/>
+  <text x="1345" y="844" class="cb" font-size="11.5">Weather</text>
+  <text x="1345" y="859" class="c" font-size="10.5">open-meteo · geolocation</text>
+  <rect x="1460" y="827" width="190" height="40" rx="8" class="svc"/>
+  <text x="1555" y="844" class="cb" font-size="11.5">NetworkUsage</text>
+  <text x="1555" y="859" class="c" font-size="10.5">speed sparkline buffers</text>
+
+  <rect x="1030" y="874" width="200" height="40" rx="8" class="svc"/>
+  <text x="1130" y="891" class="cb" font-size="11.5">Recorder</text>
+  <text x="1130" y="906" class="c" font-size="10.5">scripts/quoil → gpu-screen-rec.</text>
+  <rect x="1245" y="874" width="200" height="40" rx="8" class="svc"/>
+  <text x="1345" y="891" class="cb" font-size="11.5">GameMode · IdleInhibitor</text>
+  <text x="1345" y="906" class="c" font-size="10.5">Hypr options · idle-inhibit</text>
+  <rect x="1460" y="874" width="190" height="40" rx="8" class="svc"/>
+  <text x="1555" y="891" class="cb" font-size="11.5">Time · Screens</text>
+  <text x="1555" y="906" class="c" font-size="10.5">clock · enabled monitors</text>
+
+  <text x="1030" y="946" class="sub">+ utils/: Paths (XDG dirs, still …/caelestia) · SysInfo · Icons · Searcher (fuzzy)</text>
+
+  <!-- ======================= CROSS-LINK ARROWS ======================= -->
+  <!-- Shortcuts -> Visibilities -->
+  <path class="arrow" d="M 1085 270 C 995 380, 990 560, 1055 684"/>
+  <text x="985" y="470" class="lbl" text-anchor="end" transform="rotate(-90 985 470)">Shortcuts / IPC flip drawer bools</text>
+
+  <!-- Services <-> Drawers -->
+  <path class="arrow2" d="M 1008 700 L 952 700"/>
+  <text x="980" y="690" class="lbl" text-anchor="middle" transform="rotate(-90 980 690)"> </text>
+  <text x="962" y="676" class="lbl" text-anchor="end">state bindings ← · → method calls</text>
+
+  <!-- Plugin <-> UI (Config/Tokens) -->
+  <path class="arrow2" d="M 1008 490 L 952 490"/>
+  <text x="962" y="466" class="lbl" text-anchor="end">Config / Tokens attached to every</text>
+  <text x="962" y="481" class="lbl" text-anchor="end">window · Nexus writes config back</text>
+
+  <!-- ======================= EXTERNAL ======================= -->
+  <rect x="30" y="1010" width="1640" height="250" class="container" fill="#fff7ed" stroke="#ea580c"/>
+  <text x="50" y="1036" class="hdr" fill="#9a3412">External systems</text>
+
+  <rect x="60" y="1050" width="330" height="70" rx="9" class="ext"/>
+  <text x="225" y="1072" class="cb" font-size="12">Wayland protocols</text>
+  <text x="225" y="1090" class="c" font-size="11">layer-shell · ext-session-lock</text>
+  <text x="225" y="1106" class="c" font-size="11">idle-inhibit · screencopy</text>
+
+  <rect x="410" y="1050" width="220" height="70" rx="9" class="ext"/>
+  <text x="520" y="1072" class="cb" font-size="12">PAM / fprintd</text>
+  <text x="520" y="1090" class="c" font-size="11">password + fingerprint auth</text>
+  <text x="520" y="1106" class="c" font-size="11">for the lock screen</text>
+
+  <rect x="650" y="1050" width="310" height="70" rx="9" class="ext"/>
+  <text x="805" y="1072" class="cb" font-size="12">Hyprland</text>
+  <text x="805" y="1090" class="c" font-size="11">workspaces/windows/monitors IPC · dispatch</text>
+  <text x="805" y="1106" class="c" font-size="11">global shortcuts (caelestia:*) · layer rules</text>
+
+  <rect x="1000" y="1050" width="330" height="70" rx="9" class="ext"/>
+  <text x="1165" y="1072" class="cb" font-size="12">D-Bus</text>
+  <text x="1165" y="1090" class="c" font-size="11">UPower · BlueZ · MPRIS · StatusNotifier tray</text>
+  <text x="1165" y="1106" class="c" font-size="11">Quoil owns org.freedesktop.Notifications</text>
+
+  <rect x="1360" y="1050" width="290" height="70" rx="9" class="ext"/>
+  <text x="1505" y="1072" class="cb" font-size="12">PipeWire / WirePlumber</text>
+  <text x="1505" y="1090" class="c" font-size="11">sinks · sources · app streams</text>
+  <text x="1505" y="1106" class="c" font-size="11">audio capture for visualiser</text>
+
+  <rect x="650" y="1150" width="420" height="80" rx="9" class="ext"/>
+  <text x="860" y="1172" class="cb" font-size="12">CLI tools</text>
+  <text x="860" y="1190" class="c" font-size="11">caelestia CLI (scheme / wallpaper — see caveat in docs)</text>
+  <text x="860" y="1206" class="c" font-size="11">scripts/quoil → gpu-screen-recorder · ddcutil / brightnessctl</text>
+  <text x="860" y="1222" class="c" font-size="11">nmcli · fprintd-list · notify-send</text>
+
+  <rect x="1090" y="1150" width="250" height="80" rx="9" class="ext"/>
+  <text x="1215" y="1172" class="cb" font-size="12">Web APIs</text>
+  <text x="1215" y="1190" class="c" font-size="11">open-meteo (weather + geocoding)</text>
+  <text x="1215" y="1206" class="c" font-size="11">ipinfo.io / nominatim (location)</text>
+  <text x="1215" y="1222" class="c" font-size="11">lyrics provider</text>
+
+  <rect x="1360" y="1150" width="290" height="80" rx="9" class="ext"/>
+  <text x="1505" y="1172" class="cb" font-size="12">Files (hot-reloaded)</text>
+  <text x="1505" y="1190" class="c" font-size="11">~/.config/caelestia/shell.json ⇄ GlobalConfig</text>
+  <text x="1505" y="1206" class="c" font-size="11">~/.local/state/caelestia/: scheme.json →</text>
+  <text x="1505" y="1222" class="c" font-size="11">Colours · notifs.json · wallpaper path</text>
+
+  <text x="60" y="1165" class="sub">Hyprland config (outside this repo) drives the shell via:</text>
+  <text x="60" y="1184" class="sub">· bind → global shortcut  "caelestia:launcher", "caelestia:lock", …</text>
+  <text x="60" y="1202" class="sub">· exec → IPC targets  drawers · picker · lock · nexus · toaster</text>
+  <text x="60" y="1220" class="sub">· exec → scripts/quoil  (special workspaces, record, screenshot)</text>
+
+  <!-- external arrows -->
+  <path class="arrow" d="M 225 1048 L 225 974"/>
+  <path class="arrow" d="M 520 1048 L 520 974"/>
+  <text x="532" y="1000" class="lbl">→ Lock</text>
+  <path class="arrow" d="M 760 1048 L 760 974"/>
+  <text x="772" y="1000" class="lbl">windows · shortcuts</text>
+  <path class="arrow" d="M 930 1048 C 985 1010, 1020 1000, 1050 976"/>
+  <text x="1035" y="1010" class="lbl">→ Hypr</text>
+  <path class="arrow" d="M 1165 1048 L 1165 974"/>
+  <path class="arrow" d="M 1505 1048 L 1505 974"/>
+  <path class="arrow" d="M 1075 1170 C 1200 1140, 1350 1060, 1385 976" fill="none"/>
+  <path class="arrow" d="M 1655 1148 C 1692 1000, 1692 800, 1668 620"/>
+  <text x="1688" y="900" class="lbl" text-anchor="middle" transform="rotate(-90 1688 900)">shell.json ⇄ GlobalConfig · scheme.json → Colours</text>
+</svg>
