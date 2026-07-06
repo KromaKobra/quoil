@@ -24,6 +24,9 @@ void Requests::get(const QUrl& url, QJSValue onSuccess, QJSValue onError, QJSVal
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     request.setAttribute(QNetworkRequest::CookieSaveControlAttribute, QNetworkRequest::Manual);
+    // Qt 6.11's HTTP/2 client segfaults in QHttp2ProtocolHandler::handleHeadersReceived
+    // (multi-frame HEADERS on a TLS connection); force HTTP/1.1 until fixed upstream.
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false); // ADDED BY FABLE TO FIX CRASHES
     request.setRawHeader("Cache-Control", "no-cache, no-store");
     request.setRawHeader("Pragma", "no-cache");
     request.setRawHeader("Connection", "close");

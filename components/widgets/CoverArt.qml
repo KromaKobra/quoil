@@ -97,7 +97,7 @@ Item {
 
         anchors.fill: parent
 
-        source: Players.getArtUrl(Players.active)
+        source: Players.artSource
 
         layer.enabled: true
         layer.effect: Mask {

@@ -7,6 +7,7 @@ import Quickshell.Services.Mpris
 import Quoil
 import Quoil.Config
 import qs.components.misc
+import qs.utils
 
 Singleton {
     id: root
@@ -14,6 +15,31 @@ Singleton {
     readonly property list<MprisPlayer> list: Mpris.players.values
     readonly property MprisPlayer active: props.manualActive ?? list.find(p => getIdentity(p) === GlobalConfig.services.defaultPlayer) ?? list[0] ?? null
     property alias manualActive: props.manualActive
+
+    // Fable code to fix crashes [START]
+    readonly property string artUrl: getArtUrl(active)
+    // Local (or empty) source for the active player's cover art. Remote art is
+    // downloaded with curl instead of being loaded directly by Image, as Qt 6.11's
+    // HTTP/2 client segfaults on https image loads.
+    property string artSource
+
+    onArtUrlChanged: updateArtSource()
+    Component.onCompleted: updateArtSource()
+
+    function updateArtSource(): void {
+        const url = artUrl;
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            artSource = url;
+            return;
+        }
+
+        artSource = "";
+        artDownloader.running = false;
+        artDownloader.url = url;
+        artDownloader.path = `${Paths.imagecache}/mpris/${Qt.md5(url)}`;
+        artDownloader.running = true;
+    }
+    // Fable code to fix crashes [END]
 
     function getIdentity(player: MprisPlayer): string {
         if (!player)
@@ -48,6 +74,19 @@ Singleton {
         }
 
         target: root.active
+    }
+
+    Process { // ADDED BY FABLE TO SOLVE SHELL CRASHES. Should review to understand what has changed.
+        id: artDownloader
+
+        property string url
+        property string path
+
+        command: ["sh", "-c", `[ -f "$0" ] || { mkdir -p "$(dirname "$0")" && curl -sSfL --max-time 15 -o "$0.part" "$1" && mv "$0.part" "$0"; }`, path, url]
+        onExited: exitCode => {
+            if (exitCode === 0 && url === root.artUrl)
+                root.artSource = `file://${path}`;
+        }
     }
 
     PersistentProperties {

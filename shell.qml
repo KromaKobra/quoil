@@ -12,21 +12,22 @@ import "modules/lock"
 import Quickshell
 
 ShellRoot {
-    settings.watchFiles: true
+    settings.watchFiles: true   // Only during development? What's the performance loss?
 
-    GSFLoader {}
+    GSFLoader {}    // ./modules/ - FontLoader for Google Sans Flex font in: ./assets/google-sans-flex/
+    // ^^ What is it used for and is it needed?
 
-    Background {}
-    Drawers {}
-    AreaPicker {}
-    Lock {
+    Background {}   // ./modules/background/ - Background wallpaper, desktop clock, visualizer, etc.
+    Drawers {}      // ./modules/drawers/ - Supposidly the core, but I don't understand how
+    AreaPicker {}   // ./modules/areapicker/ - Lazy region picker for screenshots
+    Lock {          // ./modules/lock/ - Session lock. I'm assuming it's just the lock screen UI, but idk.
         id: lock
     }
 
-    ConfigToasts {}
-    Shortcuts {}
-    BatteryMonitor {}
-    IdleMonitors {
+    ConfigToasts {} // ./modules/ - Toasts on config errors, whatever that means.
+    Shortcuts {}    // ./modules/ - Keybinds I think.
+    BatteryMonitor {} // ./modules/ -
+    IdleMonitors {  // ./modules/ -
         lock: lock
     }
 }
