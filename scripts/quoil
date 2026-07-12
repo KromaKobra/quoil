@@ -15,6 +15,18 @@ EMOJI_FILE="$DATA/emojis.txt"
 notify() { command -v notify-send >/dev/null 2>&1 && notify-send -a Shell "$@" || true; }
 running() { pidof gpu-screen-recorder >/dev/null 2>&1; }
 
+# Hyprland 0.55+ lua config manager: `hyprctl dispatch` takes lua instead of
+# the legacy dispatcher syntax (`hyprctl eval` only exists under the lua manager)
+using_lua() { [[ "$(hyprctl eval 'return 0' 2>/dev/null)" == "ok" ]]; }
+
+toggle_special() {
+    if using_lua; then
+        hyprctl dispatch "hl.dsp.workspace.toggle_special(\"$1\")"
+    else
+        hyprctl dispatch togglespecialworkspace "$1"
+    fi
+}
+
 # --- toggle: show/hide a special workspace, spawning its app on first use ----
 cmd_toggle() {
     local ws="${1:?usage: quoil toggle <workspace>}"
@@ -24,7 +36,7 @@ cmd_toggle() {
         local cur
         cur=$(hyprctl -j monitors | jq -r '.[] | select(.focused) | .specialWorkspace.name' | sed 's/^special://')
         [[ -z "$cur" || "$cur" == "null" ]] && cur=special
-        hyprctl dispatch togglespecialworkspace "$cur"
+        toggle_special "$cur"
         return
     fi
 
@@ -41,15 +53,19 @@ cmd_toggle() {
     # Already running? -> just toggle visibility (rules.conf moves it into the ws)
     if [[ -n "$class" ]] && hyprctl -j clients \
         | jq -e --arg c "$class" 'any(.[]; (.class // "" | ascii_downcase) | contains($c | ascii_downcase))' >/dev/null; then
-        hyprctl dispatch togglespecialworkspace "$ws"
+        toggle_special "$ws"
         return
     fi
 
     # Not running and we have a launchable app -> open it into the special ws
     if [[ -n "$cmd" ]] && command -v "${cmd%% *}" >/dev/null 2>&1; then
-        hyprctl dispatch exec "[workspace special:$ws] app2unit -- $cmd"
+        if using_lua; then
+            hyprctl dispatch "hl.dsp.exec_cmd(\"app2unit -- $cmd\", { workspace = \"special:$ws\" })"
+        else
+            hyprctl dispatch exec "[workspace special:$ws] app2unit -- $cmd"
+        fi
     else
-        hyprctl dispatch togglespecialworkspace "$ws"
+        toggle_special "$ws"
     fi
 }
 
@@ -133,7 +149,21 @@ cmd_screenshot() {
 
 # --- pip: manual picture-in-picture for the focused window ------------------
 cmd_pip() {
-    hyprctl --batch "dispatch setfloating active ; dispatch resizeactive exact 25% 25% ; dispatch moveactive exact 74% 74% ; dispatch pin active"
+    if using_lua; then
+        # Same as the legacy batch below: exact % sizes/positions are relative
+        # to the monitor's logical size
+        hyprctl eval 'hl.dispatch(hl.dsp.window.float({ action = "on" }))
+            local m = hl.get_active_monitor()
+            if m then
+                local mw, mh = m.width / m.scale, m.height / m.scale
+                if m.transform % 2 == 1 then mw, mh = mh, mw end
+                hl.dispatch(hl.dsp.window.resize({ x = math.floor(mw * 0.25), y = math.floor(mh * 0.25), relative = false }))
+                hl.dispatch(hl.dsp.window.move({ x = math.floor(mw * 0.74), y = math.floor(mh * 0.74), relative = false }))
+            end
+            hl.dispatch(hl.dsp.window.pin())'
+    else
+        hyprctl --batch "dispatch setfloating active ; dispatch resizeactive exact 25% 25% ; dispatch moveactive exact 74% 74% ; dispatch pin active"
+    fi
 }
 
 case "${1:-}" in

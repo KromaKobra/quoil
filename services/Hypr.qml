@@ -15,7 +15,9 @@ Singleton {
     readonly property var toplevels: Hyprland.toplevels
     readonly property var workspaces: Hyprland.workspaces
     readonly property var monitors: Hyprland.monitors
-    readonly property bool usingLua: Hyprland.usingLua
+    // Quickshell 0.3.0's Hyprland module has no usingLua property, so probe
+    // the lua config manager ourselves (`hyprctl eval` only exists there)
+    property bool usingLua: false
 
     readonly property HyprlandToplevel activeToplevel: {
         const t = Hyprland.activeToplevel;
@@ -89,13 +91,28 @@ Singleton {
 
     function reloadDynamicConfs(): void {
         if (usingLua) {
-            extras.batchMessage(['eval hl.bind("Caps_Lock", hl.dsp.global("caelestia:refreshDevices"), { locked = true, non_consuming = true, ignore_mods = true, release = true })', 'eval hl.bind("Num_Lock", hl.dsp.global("caelestia:refreshDevices"), { locked = true, non_consuming = true, ignore_mods = true, release = true })']);
+            // unbind first: binds registered over the socket accumulate until
+            // the next config reload wipes them. No `;` in batched messages -
+            // the batch parser splits on it (lua needs no statement separator)
+            extras.batchMessage(['eval pcall(hl.unbind, "Caps_Lock") hl.bind("Caps_Lock", hl.dsp.global("caelestia:refreshDevices"), { locked = true, non_consuming = true, ignore_mods = true, release = true })', 'eval pcall(hl.unbind, "Num_Lock") hl.bind("Num_Lock", hl.dsp.global("caelestia:refreshDevices"), { locked = true, non_consuming = true, ignore_mods = true, release = true })']);
         } else {
             extras.batchMessage(["keyword bindlni ,Caps_Lock,global,caelestia:refreshDevices", "keyword bindlni ,Num_Lock,global,caelestia:refreshDevices"]);
         }
     }
 
-    Component.onCompleted: reloadDynamicConfs()
+    Component.onCompleted: luaProbe.running = true
+
+    Process {
+        id: luaProbe
+
+        command: ["hyprctl", "eval", "return 0"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.usingLua = text.trim() === "ok";
+                root.reloadDynamicConfs();
+            }
+        }
+    }
 
     onCapsLockChanged: {
         if (!GlobalConfig.utilities.toasts.capsLockChanged)
@@ -224,6 +241,6 @@ Singleton {
     HyprExtras {
         id: extras
 
-        usingLua: Hyprland.usingLua
+        usingLua: root.usingLua
     }
 }

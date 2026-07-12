@@ -85,7 +85,10 @@ Singleton {
     function reloadHyprRules(): void {
         let rule, trEnabled;
         if (Hypr.usingLua) {
-            rule = `eval hl.layer_rule({ match = { namespace = "caelestia-drawers" }, %1 = %2 })`;
+            // disable the previous rule (if its handle survived) so repeated
+            // transparency changes don't stack rules until the next reload.
+            // No `;` in batched messages - the batch parser splits on it
+            rule = `eval if __quoil_lr_%1 then pcall(function() __quoil_lr_%1:set_enabled(false) end) end __quoil_lr_%1 = hl.layer_rule({ match = { namespace = "caelestia-drawers" }, %1 = %2 })`;
             trEnabled = transparency.enabled;
         } else {
             rule = "keyword layerrule %1 %2, match:namespace caelestia-drawers";
