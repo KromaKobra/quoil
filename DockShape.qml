@@ -9,6 +9,7 @@ Shape {
 
     required property real length   // flat stretch of the floor between the two lower corners
     required property real depth    // how far the dock reaches into the screen
+    property bool attachedToStart: false
 
     readonly property real slope: Math.max(0, Config.dockSlope)
     // The sides' lean as an angle away from vertical.
@@ -23,10 +24,12 @@ Shape {
     // Width of each side, from leaving the edge to meeting the floor: two corners and the
     // straight run between them.
     readonly property real shoulder: 2 * arcX + slope * (depth - 2 * arcY)
-    readonly property real span: length + 2 * shoulder
+    readonly property real cornerRadius: Math.min(Math.max(0, Config.dockRadius), depth)
+    readonly property real startInset: attachedToStart ? cornerRadius : shoulder
+    readonly property real span: length + startInset + shoulder
 
     implicitWidth: span
-    implicitHeight: depth
+    implicitHeight: depth + (attachedToStart ? cornerRadius : 0)
     preferredRendererType: Shape.CurveRenderer
 
     ShapePath {
@@ -34,23 +37,23 @@ Shape {
         strokeColor: "transparent"
 
         startX: 0
-        startY: 0
+        startY: dock.attachedToStart ? dock.depth + dock.cornerRadius : 0
 
         PathArc {
-            x: dock.arcX
-            y: dock.arcY
-            radiusX: dock.radius
-            radiusY: dock.radius
+            x: dock.attachedToStart ? dock.cornerRadius : dock.arcX
+            y: dock.attachedToStart ? dock.depth : dock.arcY
+            radiusX: dock.attachedToStart ? dock.cornerRadius : dock.radius
+            radiusY: radiusX
         }
         PathLine {
-            x: dock.shoulder - dock.arcX
-            y: dock.depth - dock.arcY
+            x: dock.attachedToStart ? dock.cornerRadius : dock.shoulder - dock.arcX
+            y: dock.attachedToStart ? dock.depth : dock.depth - dock.arcY
         }
         PathArc {
-            x: dock.shoulder
+            x: dock.startInset
             y: dock.depth
-            radiusX: dock.radius
-            radiusY: dock.radius
+            radiusX: dock.attachedToStart ? 0 : dock.radius
+            radiusY: radiusX
             direction: PathArc.Counterclockwise
         }
         PathLine {
@@ -77,6 +80,10 @@ Shape {
         PathLine {
             x: 0
             y: 0
+        }
+        PathLine {
+            x: 0
+            y: dock.attachedToStart ? dock.depth + dock.cornerRadius : 0
         }
     }
 }

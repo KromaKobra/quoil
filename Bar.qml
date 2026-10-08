@@ -51,4 +51,12 @@ PanelWindow {
         vertical: bar.vertical
         scale: bar.sizeScale
     }
+
+    Item {
+        anchors.fill: parent
+
+        WorkspaceWheelHandler {
+            screen: bar.screen
+        }
+    }
 }

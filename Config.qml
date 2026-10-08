@@ -23,4 +23,9 @@ Singleton {
 
     property color barColour: Qt.rgba(0, 0, 0, 0.6)
     property color barTextColour: "white"
+
+    property int workspaceDotSize: 8
+    property int workspaceSpacing: 22
+    property int workspacePadding: 12
+    property color workspaceActiveColour: "#89b4fa"
 }

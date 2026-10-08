@@ -21,4 +21,13 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    Variants {
+        model: Quickshell.screens
+
+        WorkspaceDock {
+            required property ShellScreen modelData
+            screen: modelData
+        }
+    }
 }
