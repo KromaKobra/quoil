@@ -9,6 +9,7 @@ PanelWindow {
 
     readonly property string edge: Config.barEdges.includes(Config.barEdge) ? Config.barEdge : "top"
     readonly property bool vertical: edge === "left" || edge === "right"
+    readonly property real sizeScale: Math.max(0.1, Config.barScale)
 
     WlrLayershell.namespace: "quoil-bar"
     WlrLayershell.layer: WlrLayer.Top
@@ -25,11 +26,11 @@ PanelWindow {
     }
 
     // Window sizes are whole pixels; round the span up so the tips of the dip aren't clipped.
-    implicitWidth: vertical ? dip.depth : Math.ceil(dip.span)
-    implicitHeight: vertical ? Math.ceil(dip.span) : dip.depth
+    implicitWidth: Math.ceil((vertical ? dip.depth : dip.span) * sizeScale)
+    implicitHeight: Math.ceil((vertical ? dip.span : dip.depth) * sizeScale)
 
-    // Reserve nothing: tiled windows keep the full edge and the dip floats over them.
-    exclusiveZone: 0
+    exclusionMode: ExclusionMode.Normal
+    exclusiveZone: Math.ceil(dip.depth * sizeScale)
 
     // Drawn hanging from the top edge; rotated for the others.
     DockShape {
@@ -40,6 +41,7 @@ PanelWindow {
         anchors.alignWhenCentered: false
         length: Config.barLength
         depth: Config.barThickness
+        scale: bar.sizeScale
         rotation: ({ top: 0, right: 90, bottom: 180, left: -90 })[bar.edge]
     }
 
@@ -47,5 +49,6 @@ PanelWindow {
     Clock {
         anchors.centerIn: parent
         vertical: bar.vertical
+        scale: bar.sizeScale
     }
 }
